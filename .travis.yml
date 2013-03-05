@@ -1,0 +1,44 @@
+language: python
+
+python:
+  - 2.6
+  - 2.7
+  - 3.2
+  - 3.3
+
+env:
+  global:
+    - # need at least this so travis page will show env column
+
+# matrix:
+#   include:
+#     # - python: 2.7
+#     #   env: VBENCH=true
+
+#   # allow_failures:
+#   #   - python: 2.7
+#   #     env: VBENCH=true
+#   #   - python: 3.2
+#   #     env: FULL_DEPS=true
+
+
+before_install:
+  - echo "Waldo1"
+  - echo $VIRTUAL_ENV
+  - date
+  - export PIP_ARGS=-q # comment this this to debug travis install issues
+  - export APT_ARGS=-qq # comment this to debug travis install issues
+  # - set -x # enable this to see bash commands
+  - source ci/before_install.sh # we need to source this to bring in the env
+  - python -V
+
+install:
+  - echo "Waldo2"
+  - ci/install.sh
+
+script:
+  - echo "Waldo3"
+  - ci/script.sh
+
+after_script:
+  - ci/print_versions.py

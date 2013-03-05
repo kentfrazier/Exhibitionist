@@ -1,0 +1,51 @@
+{# This is a tornado Template #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    {# Usually, you'd want to load scripts from a local copy, so that #}
+    {# they're available even when you don't have network access #}
+
+    {# firebugx.js ensures we can use console.log on some older browsers#}
+
+    {# static_url() is a function explicitly passed in from the handler, this #}
+    {# is tornado specific and might not work in another template engine #}
+    {# it returns a url for fetching the file from the local server, #}
+    {# using content versioning, so caches are updated when (and only when) #}
+    {# you change files. make sure you pass "static_path" to get_server() #}
+    {# in app.py #}
+    <script src="{{ static_url('scripts/vendor/firebugx.js') }} "></script>
+    {# jquery forever #}
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js "></script>
+    {#    for local copy, download the script under 'scripts/vendor', and use the following line#}
+    {#    <script src="{{ static_url('scripts/vendor/jquery.min.js') }}"></script>#}
+
+    {# Uncomment if you want underscore.js#}
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+    {#    for local copy, download the script under 'scripts/vendor', and use the following line#}
+    {#    <script src="{{ static_url('scripts/vendor/underscore-min.js') }}"></script>#}
+</head>
+
+<body>
+<div id=container></div>
+
+{# provides the 'app' object with start() method #}
+<script src="{{ static_url('scripts/app.js') }} "></script>
+
+<script>
+    $(function () {
+                // these are the variables rendered in by
+                // the template engine.
+                config = {
+                    objid: '{{ objid }}',
+                    api_url: '{{ api_url }}',
+                    ws_url: '{{ ws_url }}'
+                };
+                // start app running
+                app.start(config);
+            });
+
+</script>
+
+</body>
+</html>

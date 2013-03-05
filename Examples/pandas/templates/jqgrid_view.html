@@ -1,0 +1,57 @@
+{# This is a tornado Template #}
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Pandas DataFrame Grid View</title>
+    <link rel="stylesheet"
+          href="{{ static_url('scripts/vendor/jqGrid/css/jquery-ui.css') }}"
+          type="text/css"/>
+    <link rel="stylesheet"
+          href="{{ static_url('scripts/vendor/jqGrid/css/jquery.ui.theme.css') }}"
+          type="text/css"/>
+    <link rel="stylesheet"
+          href="{{ static_url('scripts/vendor/jqGrid/css/ui.jqgrid.css') }}"
+          type="text/css"/>
+    <link rel="stylesheet" href="{{ static_url('styles/app.css') }}"
+          type="text/css"/>
+
+    <script src="{{ static_url('scripts/vendor/firebug/firebugx.js') }}"></script>
+    <script src="{{ static_url('scripts/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ static_url('scripts/vendor/jquery-ui/jquery-ui.custom.min.js') }}"></script>
+    <script src="{{ static_url('scripts/vendor/jqGrid/grid.locale-en.js') }}"></script>
+    <script type="text/javascript">
+        $.jgrid.no_legacy_api = true;
+        $.jgrid.useJSON = true;
+    </script>
+    <script src="{{ static_url('scripts/vendor/jqGrid/jquery.jqGrid.min.js') }}"></script>
+</head>
+
+<body>
+<table id="myGrid"></table>
+<div id="pager"></div>
+
+<script>
+
+</script>
+
+{#our javascript#}
+<script src="{{ static_url('scripts/app.js') }} "></script>
+
+<script>
+    $(function () {
+        // these are the variables rendered in by
+        // the template engine.
+        config = {
+            objid: '{{objid}}',
+            api_url: '{{api_url}}'.replace(/\/$/, "")
+        };
+        // start app running
+        app.start(config);
+    });
+
+</script>
+
+</body>
+
+</html>

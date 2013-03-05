@@ -1,0 +1,17 @@
+/*http://stackoverflow.com/questions/7246506/ */
+/*http://stackoverflow.com/questions/3641400/ */
+/*Multiple header rows not supprted in jqgrid 4.4, hackaround by*/
+/*putting multindex levels in sae cell, separated by  <br/>.*/
+/*This  CSS hack makes the header row height adjust*/
+/*automatically.*/
+
+.ui-th-div-ie {
+    white-space: normal !important;
+    height: auto !important;
+}
+
+th.ui-th-column div {
+    white-space: normal !important;
+    height: auto !important;
+    padding: 2px;
+}

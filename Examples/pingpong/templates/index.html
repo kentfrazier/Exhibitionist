@@ -1,0 +1,30 @@
+{# This is a tornado Template #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+{#    <script src="{{ static_url('scripts/vendor/jquery.min.js') }}"></script>#}
+    <script src="{{ static_url('scripts/vendor/firebugx.js') }} "></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js "></script>
+</head>
+<body>
+All the action is taking place in the javascript console...
+
+<script src="{{ static_url('scripts/app.js') }}"></script>
+
+
+<script>
+    $(function () {
+        // these are the variables rendered in by
+        // the template engine.
+        config = {
+            ws_url: '{{ ws_url }}'
+        };
+        // start app running
+        app.start(config);
+    });
+
+</script>
+
+</body>
+</html>
