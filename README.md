@@ -21,9 +21,9 @@ The resulting views are available as urls served from a local server and are vie
 
 *Features:*
 
-- Out-of-the-box support for two-way message passing between javascript and python using a PubSub mechanism mechanism built on websockets. 
+- Out-of-the-box support for two-way message passing between javascript and python using a PubSub mechanism mechanism built on websockets.
 - Use AJAX to dynamically load data, work with large data sets and make things
-interactive. do server things on the server and client things on the client. 
+interactive. do server things on the server and client things on the client.
 - Designed to be a dependency of you library. import it and integrate HTML
 views of you classes into your code. or monkey-patch an existing library
 with your own UI. It's all good.
@@ -39,10 +39,24 @@ with your own UI. It's all good.
 
 **Got Eyecandy?**
 
-Sure. Here's the "pandas" example showing a [pandas](http://github.com/pydata/pandas)
-dataframe using a javascript grid library, [jqGrid](https://github.com/tonytomov/jqGrid)
+Sure. Here's the "pandas" example showing a view of a [pandas](http://github.com/pydata/pandas)
+dataframe using a javascript grid library, [jqGrid](https://github.com/tonytomov/jqGrid).
 
-[![Image](https://raw.github.com/y-p/Exhibitionist/master/misc/grid.png)](https://raw.github.com/y-p/Exhibitionist/master/misc/grid.png)
+In IPython-Notebook:
+
+
+[![Image](https://raw.github.com/y-p/Exhibitionist/master/misc/cross-environment/ipython-nb.png)](https://raw.github.com/y-p/Exhibitionist/master/misc/cross-environment/ipython-nb.png)
+
+In IPython-Qtconsole:
+
+[![Image](https://raw.github.com/y-p/Exhibitionist/master/misc/cross-environment/ipython-qtconsole.png)](https://raw.github.com/y-p/Exhibitionist/master/misc/cross-environment/ipython-qtconsole.png)
+
+And in plain ol' Python:
+
+[![Image](https://raw.github.com/y-p/Exhibitionist/master/misc/cross-environment/python-terminal.png)](https://raw.github.com/y-p/Exhibitionist/master/misc/cross-environment/python-terminal.png)
+
+The view in the browser looks exactly like the inline view in IPython-Notebook
+you can see above. IP-Notebook is nicest, but isn't required for use OR development.
 
 **How does it work?**
 
@@ -55,7 +69,7 @@ and return HTML or JSON (or anything) to the client as needed. You serve static
 assets from wherever you put them, and keep all the source (templates,
 .js,.css, images) files organized in a directory as you usually would.
 The server (python) and the client(javascript) can exchange messages
-via websockets. Both sides can be subscribers and/or publishers and 
+via websockets. Both sides can be subscribers and/or publishers and
 push messages to "channels".
 
 **Doesn't IPython-Notebook already allow you to do interactive widgets?**
@@ -89,8 +103,8 @@ in exhibitionist. Cool idea, though.
 
 **Doesn't having multiple threads create Thread-Safety issues?**
 
-Yes it does, and in general you'll have to deal with that. Remember that If 
-your views are free of side-effects, the worst that can happen is an 
+Yes it does, and in general you'll have to deal with that. Remember that If
+your views are free of side-effects, the worst that can happen is an
 inconsistent view. just hit refresh.
 
 **Why is there no pypi package available?**
@@ -125,7 +139,7 @@ class ViewAllTheThings(JSONRequestHandler):
                        for k,v in obj.items()))
 
 # instantiate, register,go.
-server = get_server().add_handler(ViewAllTheThings).start() 
+server = get_server().add_handler(ViewAllTheThings).start()
 
 # the object to be viewed
 obj= dict(hello="world")
