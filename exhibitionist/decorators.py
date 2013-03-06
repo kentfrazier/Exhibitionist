@@ -41,6 +41,10 @@ class http_handler(object):
 
     _handlers = dict()
     _context = threading.local()
+    add_context = set(('on_message','prepare', 'get', 'post', 'put',
+                       'delete', 'head', 'options'))
+
+    add_prefetch = set(('get', 'post', 'put', 'delete', 'head', 'options'))
 
     @classmethod
     def get_context(cls):
@@ -118,33 +122,32 @@ class http_handler(object):
         self._handlers[o] = d
 
         # inject context into method's globals()
-        for method_name in dir(o):
+        # http://www.tornadoweb.org/documentation/web.html
+
+
+        for method_name in self.add_context:
             import types
 
-            if isinstance(getattr(o, method_name),
-                          (types.MethodType, types.FunctionType)):
+            if hasattr(o, method_name) and \
+                    isinstance(getattr(o, method_name),
+                               (types.MethodType, types.FunctionType)):
+
                 @wraps(getattr(o, method_name))
-                def wrap(f):
+                def wrap_inject_context(f):
                     return lambda x, *args, **kwds: \
                         self.inject_context(x, f, *args, **kwds)
 
-                setattr(o, method_name, wrap(f=getattr(o,
+                setattr(o, method_name, wrap_inject_context(f=getattr(o,
                                                        method_name)))
                 # if the {{objid}} marker was included
-            #wrap the method in object fetching magical goodness
-        if self.auto_obj:
-            # http://www.tornadoweb.org/documentation/web.html
-            for method_name in ['get', 'post', 'put', 'delete', 'head',
-                                'options']:
-                if hasattr(o, method_name) and \
-                        isinstance(getattr(o, method_name),
-                                   (types.MethodType, types.FunctionType)):
+                #wrap the method in object fetching magical goodness
+                if self.auto_obj and method_name in self.add_prefetch:
                     @wraps(getattr(o, method_name))
-                    def wrap(f):
+                    def wrap_prefetch_object(f):
                         return lambda x, *args, **kwds: \
                             self.prefetch_object(x, f, *args, **kwds)
 
-                    setattr(o, method_name, wrap(f=getattr(o,
+                    setattr(o, method_name, wrap_prefetch_object(f=getattr(o,
                                                            method_name)))
 
         return o
