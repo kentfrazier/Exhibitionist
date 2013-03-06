@@ -18,8 +18,13 @@ from tornado.template import Template
 class GetDataFrameView(JSONRequestHandler):
     def prepare(self):
         tmpl_file = os.path.join(self.get_template_path(),"jqgrid_view.html")
+        if not(os.path.isdir(self.get_template_path())):
+            self.set_status(500)
+            self.finish("Template path does not exist")
+            return
         with codecs.open(tmpl_file) as f:
             self.tmpl = Template(f.read())
+
 
     def get(self, objid):
         import pandas as pd
