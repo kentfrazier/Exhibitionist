@@ -113,6 +113,33 @@ class TestServer(unittest.TestCase):
         self.assertTrue(k in url)
 
 
+    def test_can_pass_handler_kwds(self):
+        from exhibitionist.decorators import http_handler
+        import requests
+
+        registry = ObjectRegistry()
+        basket = []
+
+        @http_handler(r'/', __registry=registry,foo='bar')
+        class Handler(ExhibitionistRequestHandler):
+            def initialize(self,**kwds):
+                basket.append(kwds.get('foo',''))
+
+            def get(self, *args, **kwds):
+                pass
+
+        self.server.add_handler(Handler)
+        self.server.start()
+        self.assertEqual(len(basket), 0)
+
+        url = self.server.get_view_url("Handler", __registry=registry)
+        r = requests.get(url)
+        self.assertEqual(r.status_code, 200)
+
+        self.assertEqual(len(basket), 1)
+        self.assertEqual(basket.pop(), 'bar')
+
+
     def test_add_obj_handler(self):
         from exhibitionist.decorators import http_handler
         import requests
