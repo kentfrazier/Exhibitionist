@@ -22,7 +22,7 @@ The resulting views are available as urls served from a local server and are vie
 *Features:*
 
 - Out-of-the-box support for two-way message passing between javascript and python using a PubSub mechanism mechanism built on websockets. 
-- use AJAX to dynamically load data, work with large data sets, make things
+- Use AJAX to dynamically load data, work with large data sets and make things
 interactive. do server things on the server and client things on the client. 
 - Designed to be a dependency of you library. import it and integrate HTML
 views of you classes into your code. or monkey-patch an existing library
@@ -46,7 +46,7 @@ dataframe using a javascript grid library, [jqGrid](https://github.com/tonytomov
 
 **How does it work?**
 
-By launching an in-process web-server (Tornado) in a seperate thread, request
+By launching an in-process web-server (Tornado) in a separate thread, request
 handlers gain access to live python objects in your python process without
 blocking it.
 
@@ -65,9 +65,9 @@ on this for a while now. I encourage you to look at:
 
 - [Z callbacks Notebook](https://github.com/ipython/ipython-in-depth/blob/master/notebooks/Z%20Callbacks.ipynb)-  *hint*, markdown cells can contain javascript.
 - [discussion on mailing list](http://python.6.n6.nabble.com/Notebook-Interacting-with-JavaScript-Values-td4954983.html)
-- [Another one](https://github.com/ipython/ipython/issues/2802)
+- [GH issue](https://github.com/ipython/ipython/issues/2802)
 - [Another one](https://github.com/ipython/ipython/issues/2518)
-- [Relevant Pull Request](https://github.com/ipython/ipython/pull/1697)
+- [GH PR](https://github.com/ipython/ipython/pull/1697)
 - [presentation on IPNB](http://vimeo.com/53051817)
 - [jsplugins repo](https://github.com/ipython/jsplugins)
 
@@ -80,11 +80,11 @@ integrates views into it's core using exhibitionist, You would be able
 to see the views on any system that has the library installed. But
 you need to be **running** the code, It's a dependency like any other.
 So, for example a service like [nbviewer](http://nbviewer.ipython.org/),
-won't generally work. afaict, that's no different from the sitution
+won't generally work. afaict, that's no different from the situation
 with interactive visualizations in IPython.
 
 It should be possible to use phantomJS to screen-capture images of
-dynamic views and, but that's not realy something that belongs
+dynamic views, but that's not really something that belongs
 in exhibitionist. Cool idea, though.
 
 **Doesn't having multiple threads create Thread-Safety issues?**
@@ -264,7 +264,7 @@ running in an environment where access is not a risk.
 - Tornado is currently run with debug=False, because it's autoreload
 feature can cause unexpected behaviour when files are modified while
 working in IPython.
-- Testing stale javascript/html due to the browser catch, gets you everytime.
+- Testing stale javascript/html due to the browser catch, gets you every time.
 Disable caching for development, or do a hard refresh.
 
 **I'm going to use this, what more should I know?**
@@ -285,17 +285,17 @@ Exhibitionist will look throgh them and discover all handler
 classes decorated with @http_handler.
 
 - `server.get_view_url` does some tricks for views with a route using
-the special {{objid}} marker. You shoudld read the docstring.
+the special {{objid}} marker. You should read the docstring.
 
 - see exhibitionist/providers/websocket/handlers for documentation
 of the basic message format for the websocket channel.
 You can also look at the frames going through the wire in
-the "PingPong" example, with chrome developr tools support for
+the "PingPong" example, with chrome developer tools support for
 monitoring websocket connections.
 
 - websocket clients that are both publisher and subscriber
 on same channel, weill not receive messages they themselves publish.
-on the python side, you can use the "exclude" paramater of server,notify_X()
+on the python side, you can use the "exclude" parameter of server,notify_X()
 to exclude a python callback from receiving it's own message.
 
 - whatever extra keyword argument you pass to @http_handler
