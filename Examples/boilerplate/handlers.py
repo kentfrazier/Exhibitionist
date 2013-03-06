@@ -25,10 +25,17 @@ PROJECT_NAME = "myAwesomeProject"
 # JSONRequestHandler is a subclass of tornado's RequestHandler
 # with the addition of JSONMixin, providing the write_json()
 # method.
-@http_handler(r'/%s/{{objid}}' % PROJECT_NAME)
+@http_handler(r'/%s/{{objid}}' % PROJECT_NAME,foo='bar')
 class MainViewHandler(JSONRequestHandler):
-    def __init__(self, *args, **kwds):
-        super(MainViewHandler, self).__init__(*args, **kwds)
+
+    # any custom kwds argument specified via @http_handler
+    # will be available in kwds
+    def initialize(self,**kwds):
+        kwds.get('foo') == 'bar'
+
+    # prepare is called after __init__ is run
+    def prepare(self):
+        pass
 
     # get is invoked when the user issues an HTTP GET request, the
     # common case. You can also implement put, post, delete and others
@@ -40,16 +47,25 @@ class MainViewHandler(JSONRequestHandler):
     def get(self, objid):
 
         # Instantiate a template object using Template engine
-        # This can be moved to __init__ when index.html is stabilized
+        # This can be moved to prepare() when index.html is stabilized
         # Done like this, changes to the template are reflected
-        # on (no-cache) refresh.
+        # on (no-cache) refresh
+
         tmpl_file = os.path.join(self.get_template_path(),"index.html")
-        self.tmpl = Template(codecs.open(tmpl_file).read())
+        if not(os.path.isdir(self.get_template_path())):
+            # logger.fatal(self.transforms)
+            logger.fatal(self._transforms)
+            self.set_status(500)
+            return self.finish("Template path does not exist")
+
+        with codecs.open(tmpl_file) as f:
+            self.tmpl = Template(f.read())
+
 
         # validate the object's type to avoid mysterious errors later on
         if not isinstance(context.object, list):
-            raise HTTPError(500, # Server Error status code
-                            log_message="bad object type") # to the log
+            self.set_status(500)
+            return self.finish("bad object type")
 
         # Tornado makes query parameters available via `get_argument`.
         # Here we handle requests for "/myAwesomeProject/{objid}?format=json".

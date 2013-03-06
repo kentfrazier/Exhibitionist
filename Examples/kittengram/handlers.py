@@ -10,11 +10,14 @@ context = None # lose the warnings
 
 @http_handler(r'/numpy/{{objid}}/(?P<animal>cat|dog)')
 class KittenGram(JSONRequestHandler):
-    def __init__(self, *args, **kwds):
-        super(KittenGram, self).__init__(*args, **kwds)
-        tmpl_file = os.path.join(self.get_template_path(), "index.html")
-        data = codecs.open(tmpl_file).read()
-        self.tmpl = Template(data)
+# prepare is called after __init__ is run
+    def prepare(self):
+        tmpl_file = os.path.join(self.get_template_path(),"index.html")
+        if not(os.path.isdir(self.get_template_path())):
+            self.set_status(500)
+            return self.finish("Template path does not exist")
+        with codecs.open(tmpl_file) as f:
+            self.tmpl = Template(f.read())
 
     def get(self, objid, animal):
         if self.get_argument("format", "").lower() == "json":

@@ -20,10 +20,17 @@ class PingPongView(JSONRequestHandler):
     def get(self):
         #note no leading slash, common cause of errors
         tmpl_file = os.path.join(self.get_template_path(),"index.html")
-        tmpl = Template(codecs.open(tmpl_file).read())
+        if not(os.path.isdir(self.get_template_path())):
+            # logger.fatal(self.transforms)
+            logger.fatal(self._transforms)
+            self.set_status(500)
+            return self.finish("Template path does not exist")
+
+        with codecs.open(tmpl_file) as f:
+            self.tmpl = Template(f.read())
 
         static_base=self.static_url("")[:-1] # strip trailing slash
-        result= tmpl.generate(static_base=static_base,
+        result= self.tmpl.generate(static_base=static_base,
                               ws_url=context.get_ws_url(),
                               static_url=self.static_url)
         self.write(result)

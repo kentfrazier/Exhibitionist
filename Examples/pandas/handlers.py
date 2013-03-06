@@ -42,9 +42,6 @@ class GetDataFrameView(JSONRequestHandler):
 
 @http_handler(r'/pandas/(?P<noun>columns|rows)/{{objid}}$')
 class jqGridPandasAjax(JSONRequestHandler):
-    def __init__(self, *args, **kwds):
-        super(jqGridPandasAjax, self).__init__(*args, **kwds)
-
     def get(self, objid, noun):
         import math
         import pandas as pd
