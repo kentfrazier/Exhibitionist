@@ -382,7 +382,7 @@ class ExhibitionistServer(IProvider, threading.Thread):
                     self.ioloop.start()
 
                     # self.ioloop.close() # despite everything, still throwing fd errors
-                    logger.info('Stopped server at {}:{}'.format(self.address,
+                    logger.info('Stopped server at {0}:{1}'.format(self.address,
                                                                  self.port))
                     logger.info('Stopped IOLoop')
 
@@ -398,7 +398,7 @@ class ExhibitionistServer(IProvider, threading.Thread):
                         logger.error(str(e)) # pragma: no cover
                         break # pragma: no cover
 
-            logger.error("Couldn't listen on ports: [{},{})".format(port_start,
+            logger.error("Couldn't listen on ports: [{0},{1})".format(port_start,
                                                                     # pragma: no cover
                                                                     port_end)) # pragma: no cover
             self.synq.put(errno.EADDRNOTAVAIL)# pragma: no cover

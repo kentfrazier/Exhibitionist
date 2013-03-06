@@ -121,7 +121,7 @@ class ViewAllTheThings(JSONRequestHandler):
             self.write_json(context.object)
         else:
             obj = context.object #  the object associated with objid
-            self.write("<br/>".join("<b>{}</b>:<em>{}</em>".format(k,v)
+            self.write("<br/>".join("<b>{0}</b>:<em>{1}</em>".format(k,v)
                        for k,v in obj.items()))
 
 # instantiate, register,go.
