@@ -16,8 +16,7 @@ from tornado.template import Template
 
 @http_handler(r'/pandas/df/{{objid}}$', view_name="dfView")
 class GetDataFrameView(JSONRequestHandler):
-    def __init__(self, *args, **kwds):
-        super(GetDataFrameView, self).__init__(*args, **kwds)
+    def prepare(self):
         tmpl_file = os.path.join(self.get_template_path(),"jqgrid_view.html")
         with codecs.open(tmpl_file) as f:
             self.tmpl = Template(f.read())
