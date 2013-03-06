@@ -240,8 +240,8 @@ Just be wary of strange hangs.
 
 **what about security?**
 
-This way of doing things (as a full-blown web-app) open us a whole bunch
-os issues, from data being exposed through the server (although it's bound
+This way of doing things (as a full-blown web-app) opens up a whole bunch
+of issues, from data being exposed through the server (although it's bound
 to localhost only by default) to xss/csrf attacks through data being fed
 un-escaped into HTML and other attacks I haven't even heard of.
 You should take all the precautions appropriate to your scenario,
