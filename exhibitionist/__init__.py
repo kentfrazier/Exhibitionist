@@ -3,7 +3,6 @@ from __future__ import print_function
 import six
 
 from exhibitionist.settings import TORNADO_LOG_FILE
-from exhibitionist.version import short_version, version
 
 import exhibitionist.decorators as decorators
 import exhibitionist.exceptions as exceptions
@@ -16,15 +15,10 @@ import exhibitionist.settings as settings
 import exhibitionist.shared as shared
 
 try:
-    import version
+    from exhibitionist.version import short_version, version
 except:
-    class Version(object):
-        version = 'unknown'
-        short_version = 'unknown'
-
-    version = Version()
-    print(
-        "You need to install the package with 'python setup.py install/develop'")
+    version = 'unknown'
+    short_version = 'unknown'
 
 
 if TORNADO_LOG_FILE:
