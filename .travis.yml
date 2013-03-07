@@ -14,6 +14,9 @@ matrix:
    include:
      - python: 3.3
        env: PYTHONWARNINGS="d"
+  allow_failures:
+     - python: 3.3
+       env: PYTHONWARNINGS="d"
 
 before_install:
   - echo "Waldo1"
