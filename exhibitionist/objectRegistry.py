@@ -31,10 +31,16 @@ class ObjectRegistry(object):
         self.nonce = str(random.random()) # unique seed for each run
         self._canary = object() # used internally to signal missing object
 
+        self.HASH_LEN = self.hash_obj(object())
 
     def hash_obj(self, obj):
         """Taks a hashable object and returns a key as string"""
-        return sha1((str(id(obj)) + self.nonce).encode('utf-8')).hexdigest()
+        s = (str(id(obj)) + self.nonce)
+
+        if six.PY3:
+            s = s.encode('utf-8')
+
+        return sha1(s).hexdigest()
 
     @mlock
     def register(self, obj, weak=False):
@@ -113,7 +119,8 @@ class ObjectRegistry(object):
 
         assert isinstance(objid, six.string_types)
 
-        if self.min_objid_len and len(objid) < self.min_objid_len:
+        if (self.min_objid_len and len(objid) < self.min_objid_len) or\
+                (not self.use_short_keys and len(objid) < self.HASH_LEN) :
             return None
 
         if objid not in self._registry:
