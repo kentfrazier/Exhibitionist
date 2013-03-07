@@ -37,12 +37,15 @@ def get_server(port=None, address='127.0.0.1',
 
     :param port: port server should bind do, if unspecified, a port
            will be automatically selected.
+    :rtype port: int
     :param address: ip address to bind to, by default localhost.
+    :rtype address: string
     :param websockets_enabled: (default: True) whether to enable the
           websockets provider.
     :rtype websockets_enabled: bool
+
     :param **kwds: all other kwds will be passed to the tornado application
-          constructor. In particularm you might find the "static_path"
+          constructor. In particular you might find the "static_path"
           and "template_path" settings useful.
 
     :return: an instance of ExhibitionistServer, you must register
