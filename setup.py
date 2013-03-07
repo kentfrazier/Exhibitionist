@@ -125,7 +125,7 @@ setup_args=dict(
                    'coverage',
                    'ws4py>=0.2.4', # for websockets
                    'requests', # for HTTP
-                   #'gevent', # for parallel clients
+                   #'grequests', # for parallel HTTP
                  ],
     test_suite='nose.collector',
     long_description=LONG_DESCRIPTION,

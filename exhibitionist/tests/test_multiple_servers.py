@@ -5,6 +5,7 @@ from __future__ import print_function
 # testing #
 ###########
 import errno
+from exhibitionist.toolbox import ExhibitionistRequestHandler
 import nose
 
 from exhibitionist import get_server
@@ -75,31 +76,24 @@ class TestMultiServers(unittest.TestCase):
         servers concurrently,
 
         """
-        # lookes like gevent messes up socket closing
-        # this interferes with other tests
-        raise nose.SkipTest()
         try:
-            import gevent
+            import grequests
         except ImportError:
-            raise nose.SkipTest("gevent not available")
+            raise nose.SkipTest("grequests not available")
 
-        from gevent import socket
-        import requests
+        import grequests
         from exhibitionist.objectRegistry import ObjectRegistry
         from exhibitionist.decorators import http_handler
-        import tornado.web
-        import threading
         import random
 
         registry = ObjectRegistry()
         @http_handler(r'/{{objid}}', __registry=registry)
-        class Handler(tornado.web.RequestHandler):
+        class Handler(ExhibitionistRequestHandler):
             def get(self, *args, **kwds):
                 self.write(str(id(context.object)))
 
         N_SERVERS = 3
         N_CONC_CONNS = 20
-
 
         for i in range(10):
 
@@ -113,16 +107,16 @@ class TestMultiServers(unittest.TestCase):
                 objs=[object() for i in range(N_CONC_CONNS)] # use integers
                 for i in range(N_CONC_CONNS): # 50 connections at once
                     o = objs[i]
-                    r= random.randint(0, N_SERVERS-1)
+                    r = random.randint(0, N_SERVERS-1)
                     assert r < N_SERVERS
                     s = servers[r]
                     urls.append(s.get_view_url("Handler", o, __registry=registry))
                 assert len(urls) == len(objs)
-                jobs = [gevent.spawn(requests.get, url) for url in urls]
-                gevent.joinall(jobs, timeout=5)
 
-                for i,r in enumerate(jobs):
-                    r =r.value
+                jobs = [grequests.get(url) for url in urls]
+                results = grequests.map(jobs)
+
+                for i,r in enumerate(results):
                     self.assertTrue(str(id(objs[i])) == r.content)
 
             finally:
