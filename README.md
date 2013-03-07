@@ -72,34 +72,16 @@ The server (python) and the client(javascript) can exchange messages
 via websockets. Both sides can be subscribers and/or publishers and
 push messages to "channels".
 
-**Doesn't IPython-Notebook already allow you to do interactive widgets?**
+**Doesn't IPython-Notebook already allow you to do interactive UIs?**
 
-It's hard to tell, but the answer is probably yes, they've been working
-on this for a while now. I encourage you to look at:
-
-- [Z callbacks Notebook](https://github.com/ipython/ipython-in-depth/blob/master/notebooks/Z%20Callbacks.ipynb)-  *hint*, markdown cells can contain javascript.
-- [discussion on mailing list](http://python.6.n6.nabble.com/Notebook-Interacting-with-JavaScript-Values-td4954983.html)
-- [GH issue](https://github.com/ipython/ipython/issues/2802)
-- [Another one](https://github.com/ipython/ipython/issues/2518)
-- [GH PR](https://github.com/ipython/ipython/pull/1697)
-- [presentation on IPNB](http://vimeo.com/53051817)
-- [jsplugins repo](https://github.com/ipython/jsplugins)
-
-I did, and after looking at what's available decided I prefer things to
-follow web app development practices, without coupling development or use
-to the IPython environment. You should use what works best for you, of course.
-
-One Issue to consider is reproducibility, If you use a library that
-integrates views into it's core using exhibitionist, You would be able
-to see the views on any system that has the library installed. But
-you need to be **running** the code, It's a dependency like any other.
-So, for example a service like [nbviewer](http://nbviewer.ipython.org/),
-won't generally work. afaict, that's no different from the situation
-with interactive visualizations in IPython.
-
-It should be possible to use phantomJS to screen-capture images of
-dynamic views, but that's not really something that belongs
-in exhibitionist. Cool idea, though.
+The IPython team is working on the next big version of IPython, and
+this is on the roadmap with a big redesign, planned for release at
+the end of 2013 or during 2014. From discussion on the mailing list
+it's clear that it's more accurate to call these "IPython extensions"
+rather then plain ol' web-applications because they will have to
+rely on IPython APIs for communications and preloading javascript.
+It's still early, but it's obvious they're putting a lot of
+thought into this.
 
 **Doesn't having multiple threads create Thread-Safety issues?**
 
@@ -267,10 +249,6 @@ look and feel nicer. Fending off attackers was not a real design concern.
 
 **Any Gotchas?**
 
-- If you're using IP-Notebook, views relying on AJAX to fetch data can't be
-"frozen" with [nbviewer] (http://nbviewer.ipython.org/), you'll need to
-use either a live version of the notebook with exhibitionist installed,
-or fallback to static HTML repr()s.
 - The server's socket isn't released until you call server.stop(), remember
 to cleanup.
 - Be aware that you are exposing your data through a local web server.
