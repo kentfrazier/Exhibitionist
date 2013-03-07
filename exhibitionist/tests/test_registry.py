@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import unittest
+from exhibitionist.decorators import MIN_OBJID_LEN
 from exhibitionist.objectRegistry import ObjectRegistry
 
 
@@ -68,7 +69,7 @@ class TestRegistry(unittest.TestCase):
         class A(object):
             pass
 
-        # keys shorter then MIN_OBJID_LEN are ignoredI
+        # keys shorter then MIN_OBJID_LEN are ignored
         r = ObjectRegistry(MIN_OBJID_LEN)
         a = A()
         key = r.register(a)
@@ -79,13 +80,70 @@ class TestRegistry(unittest.TestCase):
             self.assertEqual(id(r.get(key[:i])), id(a))
 
 
-        # make sure collisions are detected
-        key = list(r._registry.keys())[0]
-        key = key[:-1] + "_"
-        r._registry[key] = object()
+    def test_return_min_len_key(self):
+        def full_id(partial):
+            return [x for x in d if x.startswith(partial)][0]
+        # start returning keys with len >=1
+        # force collisions by registering lots of objects
+        r=ObjectRegistry(min_objid_len=1)
+        d=r._registry
 
-        self.assertEqual(r.get(key[:-1]), None)
+        objs = [object()]
+        oids = [r.register(objs[-1])]
 
+
+
+        for i in range(512): # 16**3
+            objs.append(object())
+            oids.append(r.register(objs[-1]))
+            self.assertEqual(r.get(full_id(oids[-1])),objs[-1])
+
+            # make sure we get back the same key, if we reregister
+            l = len(d)
+            self.assertEqual(oids[-1],r.register(objs[-1]))
+            # no change in number of keys
+            self.assertEqual(len(d), l)
+
+    def test_return_min_len_key_more(self):
+        def full_id(partial):
+            return [x for x in d if x.startswith(partial)][0]
+        # start returning keys with len >=8 (MIN_OBJID_LEN)
+        # force collisions by building keys and shoving them
+        # into the registry
+        # then reregister same object and make sure
+        # we get back an objid which is longer then
+        # previous iteration, and that we can get back the object
+        # # with it.
+
+        r=ObjectRegistry(min_objid_len=8)
+        d=r._registry
+
+        HASH_LEN =len(r.hash_obj(object())) # should be 40 for sha1
+
+        objs = [object()]
+        partial = r.register(objs[-1])
+        oid = full_id(partial)
+        for i in range(8,HASH_LEN):
+        # now we've yanked a reference out, let's inject
+        # back in with the same (i+1)-prefix
+            print(d.keys())
+            partial += '_'
+            new_oid = partial + oid[i+1:]
+
+            # use the registry to store a reference,
+            # then yank it out and reinsert with new_oid
+            objs.append(object())
+            oid = full_id(r.register(objs[-1]))
+            d[new_oid] = d.pop(oid)
+
+        # check that the prefix gets us the original object
+        # and that the prefix+_ gets us the new object
+        # and that registering the same object, gets us the
+        # new id
+        #     self.assertEqual(r.get(partial[:-1]), objs[-2])
+
+            self.assertEqual(r.get(partial[:-1]), objs[-2])
+            self.assertEqual(r.get(partial), objs[-1])
 
 
 
