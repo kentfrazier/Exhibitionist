@@ -398,13 +398,14 @@ class ExhibitionistServer(IProvider, threading.Thread):
                 (self._server,portnum) = self._create_http_server(port_start,
                                                                   port_end,
                                                                   self.ioloop)
+
+            except (OSError,socket.error) as  e:
+                self.synq.put(e.errno)# pragma: no cover
                 errmsg="Couldn't listen on ports: [{0},{1})"
                 logger.error(errmsg.format(port_start, port_end))
-
-            except socket.error as  e:
-                self.synq.put(e.errno)# pragma: no cover
                 raise
-            except:
+            except Exception as e:
+                logger.error(str(e))
                 raise
 
             # we're fine, start the loop

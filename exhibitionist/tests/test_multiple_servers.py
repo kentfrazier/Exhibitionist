@@ -36,8 +36,9 @@ class TestMultiServers(unittest.TestCase):
         from random import random
         import socket
 
+
         for i in range(100):
-            server = get_server().start()
+            server = get_server(port=4000).start()
             self.assertTrue(server.isAlive())
 
             # make sure port is taken
@@ -58,16 +59,22 @@ class TestMultiServers(unittest.TestCase):
             server.join(1)
             self.assertFalse(server.isAlive())
 
+            error=False
             # make sure port is available
             try:
                 s.bind((addr, port))
-            except socket.error as e:
+            except (OSError, socket.error) as e:
+                error = True
                 if e.errno == errno.EADDRINUSE:
-                    self.fail("socket not released after server stop()")
+                    msg = "socket not released after server stop()"
                 else:
-                    self.fail("couldn't bind to available socket, unknown error")
+                    msg = "couldn't bind to available socket, unknown error"
             else:
                 s.close()
+
+            if error:
+                self.fail(msg)
+
 
     def test_multiple(self):
         """
