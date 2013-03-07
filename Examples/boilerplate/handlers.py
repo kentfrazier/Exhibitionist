@@ -61,11 +61,10 @@ class MainViewHandler(JSONRequestHandler):
         with codecs.open(tmpl_file) as f:
             self.tmpl = Template(f.read())
 
-
         # validate the object's type to avoid mysterious errors later on
-        if not isinstance(context.object, list):
+        if not isinstance(context.object, (list,tuple)):
             self.set_status(500)
-            return self.finish("bad object type")
+            return self.finish("Bad object type, expected list or tuple")
 
         # Tornado makes query parameters available via `get_argument`.
         # Here we handle requests for "/myAwesomeProject/{objid}?format=json".
