@@ -211,19 +211,21 @@ The `examples/` directory contains several examples:
 - 'boilerplate', a heavily documented skeleton project to start your own views with.
 - 'pingpong', a project demonstrating the use of PubSub to exchange messages
 between server and client using websockets.
-- kittengram, a silly example that uses D3 to visualize arrays as pet scatter
-plots. websockets are use to trigger javascript mischief in the browser from
+- 'kittengram', a silly example that uses D3 to visualize arrays as pet scatter
+plots. websockets are used to trigger javascript mischief in the browser from
 python. meow.
 - 'pandas', a more complete example that renders [pandas](http://www.github.com/pydata/pandas)
 dataframes using a javascript grid widget [jqGrid](https://github.com/tonytomov/jqGrid).
 Data is loaded on-demand using AJAX, so even very large dataframes can be
 displayed. Even works with multi-index on either axis ftw.
 
-To run them the examples, you should clone the repo, install Exhibitionist using
-"python setup.py install", change directory into the `example/{example_name}` directory
-so the examples' modules can be imported and paste the code from app.py
-into your IPython/python prompt. you should get a url or rendered view
-to admire.
+To run the examples, you should clone the repo, install Exhibitionist using
+"python setup.py install". You need to have the example directory in your
+ python path, it's easiest to just change directory into the `example/{example_name}` directory
+to do that. Then just run app.py and follow the prompt. You really need
+look at the code of app.py to understand what's going on. If you follow
+the instructions you should see a url to be opened or arendered view
+to admire, if you're in IPNBV.
 
 **Why Tornado, why not X?**
 
