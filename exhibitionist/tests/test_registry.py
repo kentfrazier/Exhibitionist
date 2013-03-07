@@ -146,7 +146,14 @@ class TestRegistry(unittest.TestCase):
             self.assertEqual(r.get(partial), objs[-1])
 
 
+    def test_use_short_keys(self):
 
+        r=ObjectRegistry(min_objid_len=8,use_short_keys=True)
+        HASH_LEN =len(r.hash_obj(object())) # should be 40 for sha1
+        self.assertEqual(len(r.register(object())), 8)
 
+        r=ObjectRegistry(min_objid_len=7,use_short_keys=True)
+        self.assertEqual(len(r.register(object())), 7)
 
-
+        r=ObjectRegistry(min_objid_len=7,use_short_keys=False)
+        self.assertEqual(len(r.register(object())), HASH_LEN)

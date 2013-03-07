@@ -18,8 +18,11 @@ RegObj = namedtuple("RegObj", "ref objid")
 
 
 class ObjectRegistry(object):
-    def __init__(self,min_objid_len=MIN_OBJID_LEN):
+    def __init__(self,min_objid_len=MIN_OBJID_LEN,use_short_keys=True):
         from exhibitionist.util.compat import OrderedDict
+
+        self.min_objid_len = min_objid_len
+        self.use_short_keys = use_short_keys
 
         self.lock = threading.RLock()
         # by using an Ordered dict, we can disambiguate
@@ -27,7 +30,7 @@ class ObjectRegistry(object):
         self._registry = OrderedDict()
         self.nonce = str(random.random()) # unique seed for each run
         self._canary = object() # used internally to signal missing object
-        self.min_objid_len = min_objid_len
+
 
     def hash_obj(self, obj):
         """Taks a hashable object and returns a key as string"""
@@ -79,6 +82,9 @@ class ObjectRegistry(object):
             ref = Ref(obj)
         self._registry[objid] = RegObj(ref=ref, objid=objid)
 
+        if not self.use_short_keys:
+            i=len(objid)
+
         return objid[:i]
 
 
@@ -110,11 +116,11 @@ class ObjectRegistry(object):
         if self.min_objid_len and len(objid) < self.min_objid_len:
             return None
 
-
-        for k in self._registry:
-            if k.startswith(objid):
-                objid = k
-                break
+        if objid not in self._registry:
+            for k in self._registry:
+                if k.startswith(objid):
+                    objid = k
+                    break
 
         objnd =  self._registry.get(objid, self._canary)
 

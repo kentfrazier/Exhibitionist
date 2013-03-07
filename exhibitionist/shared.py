@@ -11,5 +11,6 @@ from exhibitionist.decorators import MIN_OBJID_LEN
 __all__=['registry']
 
 # Single Thread-Safe registry, used by all servers.
-registry = ObjectRegistry(min_objid_len=MIN_OBJID_LEN)
+registry = ObjectRegistry(min_objid_len=MIN_OBJID_LEN,
+                          use_short_keys=True)
 
