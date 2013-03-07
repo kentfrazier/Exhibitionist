@@ -8,4 +8,4 @@ echo "inside $0"
 #     exit
 # fi
 
-python setup.py test
+nosetests -v
