@@ -346,21 +346,47 @@ class ExhibitionistServer(IProvider, threading.Thread):
             self.join()
         return self
 
-    def run(self):
-        try:
-            import socket
+    def _create_http_server(self,port_start,port_end,ioloop):
+        import socket
 
+        server = HTTPServer(self.application, io_loop=ioloop)
+
+        for portnum in range(port_start, port_end):
+            try:
+
+                server.listen(portnum,
+                                    address=self._address_requested)
+                logger.info('Server listening on port {0}'.format(portnum))
+                self._port_used = portnum
+                self._address_used = self._address_requested
+
+                return server, portnum
+
+            except socket.error as  e:
+                # try remaining ports if port used, raise otherwise
+                if e.errno != errno.EADDRINUSE or portnum == port_end-1:
+                    logger.error(str(e)) # pragma: no cover
+                    try:
+                        server.stop()
+                    except:
+                        pass
+                    raise
+
+
+    def run(self):
+        import socket
+
+        try:
             logger.info('Starting Up')
 
             for p in self.providers:
                 p.populate_context(http_handler.get_context())
 
-            self._register_handlers() # register all discovered http_handler with Tornado application
+            # register all discovered http_handler with Tornado application
+            self._register_handlers()
 
             # extra kwds are passed to application as settings
             # self.application.settings.update(kwds)
-
-            self._server = HTTPServer(self.application, io_loop=self.ioloop)
 
             port_start = self._port_requested or settings.SERVER_PORT_BASE
             if self._port_requested:
@@ -368,40 +394,35 @@ class ExhibitionistServer(IProvider, threading.Thread):
             else:
                 port_end = min(65535, port_start + settings.MAX_N_SOCKETS)
 
-            # try and find a free port starting at SERVER_PORT_BASE
-            for portnum in range(port_start, port_end):
-                try:
+            try:
+                (self._server,portnum) = self._create_http_server(port_start,
+                                                                  port_end,
+                                                                  self.ioloop)
+                errmsg="Couldn't listen on ports: [{0},{1})"
+                logger.error(errmsg.format(port_start, port_end))
 
-                    self._server.listen(portnum,
-                                        address=self._address_requested)
-                    logger.info('Server listening on port {0}'.format(portnum))
-                    self._port_used = portnum
-                    self._address_used = self._address_requested
+            except socket.error as  e:
+                self.synq.put(e.errno)# pragma: no cover
+                raise
+            except:
+                raise
 
-                    self.synq.put(0) # signal successful startup
-                    self.ioloop.start()
+            # we're fine, start the loop
+            self.synq.put(0) # signal successful startup
+            self.ioloop.start()
 
-                    # self.ioloop.close() # despite everything, still throwing fd errors
-                    logger.info('Stopped server at {0}:{1}'.format(self.address,
-                                                                 self.port))
-                    logger.info('Stopped IOLoop')
+            # blocked here, until someone stops the loop, safely.
 
-                    # not Thread Safe
-                    self._port_used = None
-                    self._server = None
-                    self.application = None
+            # self.ioloop.close() # despite everything, still throwing fd errors
+            logger.info('Stopped server at {0}:{1}'.format(self.address,
+                                                           self.port))
+            logger.info('Stopped IOLoop')
 
-                    return
-                except socket.error as  e:
-                    if e.errno != errno.EADDRINUSE:  # retry on port used, fail on other problems
-                        self.synq.put(e.errno) # pragma: no cover
-                        logger.error(str(e)) # pragma: no cover
-                        break # pragma: no cover
+            # not Thread Safe
+            self._port_used = None
+            self._server = None
+            self.application = None
 
-            logger.error("Couldn't listen on ports: [{0},{1})".format(port_start,
-                                                                    # pragma: no cover
-                                                                    port_end)) # pragma: no cover
-            self.synq.put(errno.EADDRNOTAVAIL)# pragma: no cover
 
         except Exception as e: # capture exceptions from daemonic thread to log file
             import traceback as tb
