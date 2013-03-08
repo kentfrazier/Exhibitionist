@@ -145,6 +145,46 @@ class TestRegistry(unittest.TestCase):
             self.assertEqual(r.get(partial[:-1]), objs[-2])
             self.assertEqual(r.get(partial), objs[-1])
 
+        # Done
+
+    def test_return_min_len_key_more2(self):
+        def full_id(partial):
+            return [x for x in d if x.startswith(partial)][0]
+            # start returning keys with len >=8 (MIN_OBJID_LEN)
+            # force collisions by building keys and shoving them
+            # into the registry
+            # then reregister same object and make sure
+            # we get back an objid which is longer then
+            # previous iteration, and that we can get back the object
+            # # with it.
+
+        MIN_OBJID_LEN=8
+
+        r=ObjectRegistry(min_objid_len=MIN_OBJID_LEN)
+        d=r._registry
+
+        HASH_LEN =len(r.hash_obj(object())) # should be 40 for sha1
+
+        ##### new test
+        for i in range(MIN_OBJID_LEN,HASH_LEN-1):
+            o = object()
+            oid = r.register(o)
+            foid = full_id(oid)
+            new_oid = foid[i:] + '_' * (HASH_LEN-i)
+            d[new_oid] = d.pop(foid)
+            self.assertTrue(len(r.register(o)) >= len(oid))
+
+        for j in range(100):
+            import random
+            o = object()
+            oid = r.register(o)
+            foid = full_id(oid)
+            i=random.randint(MIN_OBJID_LEN,HASH_LEN-1)
+            new_oid = foid[i:] + '_' * (HASH_LEN-i)
+            d[new_oid] = d.pop(foid)
+            self.assertTrue(len(r.register(o)) >= len(oid))
+
+
 
     def test_use_short_keys(self):
 
@@ -157,3 +197,6 @@ class TestRegistry(unittest.TestCase):
 
         r=ObjectRegistry(min_objid_len=7,use_short_keys=False)
         self.assertEqual(len(r.register(object())), HASH_LEN)
+
+        # must use full key when short_keys=False
+        self.assertEqual(r.get(r.register(object())[:-1]), None)

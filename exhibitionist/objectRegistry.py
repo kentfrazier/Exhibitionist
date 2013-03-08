@@ -31,7 +31,7 @@ class ObjectRegistry(object):
         self.nonce = str(random.random()) # unique seed for each run
         self._canary = object() # used internally to signal missing object
 
-        self.HASH_LEN = self.hash_obj(object())
+        self.HASH_LEN = len(self.hash_obj(object()))
 
     def hash_obj(self, obj):
         """Taks a hashable object and returns a key as string"""
