@@ -236,7 +236,7 @@ feature can cause unexpected behaviour when files are modified while
 working in IPython. You might want to look into turning the back on.
 Just be wary of strange hangs.
 
-**what about security?**
+**What about security?**
 
 This way of doing things (as a full-blown web-app) opens up a whole bunch
 of issues, from data being exposed through the server (although it's bound
@@ -264,16 +264,15 @@ Disable caching for development, or do a hard refresh.
 **I'm going to use this, what more should I know?**
 
 - You can load views using just a prefix of the objid, just like
-git let's you do. just use at least the first 8 characters, so:
+  git let's you do. just use at least the first 8 characters, so:
 
-so:
-http://127.0.0.1:9083/myView/39c56ad2
+   http://127.0.0.1:9083/myView/39c56ad2
 
-is practically always interchangeable with:
+   is practically always interchangeable with:
 
-http://127.0.0.1:9083/myView/39c56ad23ea1c2826a7406c9d8c42cc96884a406
+   http://127.0.0.1:9083/myView/39c56ad23ea1c2826a7406c9d8c42cc96884a406
 
-- when calling server.add_handler() to register your handlers,
+- When calling server.add_handler() to register your handlers,
 you can pass in a request handler class or a module/package,
 Exhibitionist will look throgh them and discover all handler
 classes decorated with @http_handler.
@@ -281,18 +280,18 @@ classes decorated with @http_handler.
 - `server.get_view_url` does some tricks for views with a route using
 the special {{objid}} marker. You should read the docstring.
 
-- see exhibitionist/providers/websocket/handlers for documentation
+- See exhibitionist/providers/websocket/handlers for documentation
 of the basic message format for the websocket channel.
 You can also look at the frames going through the wire in
 the "PingPong" example, with chrome developer tools support for
 monitoring websocket connections.
 
-- websocket clients that are both publisher and subscriber
-on same channel, weill not receive messages they themselves publish.
+- Websocket clients that are both publisher and subscriber
+on same channel, will not receive messages they themselves publish.
 on the python side, you can use the "exclude" parameter of server,notify_X()
 to exclude a python callback from receiving it's own message.
 
-- whatever extra keyword argument you pass to @http_handler
+- Whatever extra keyword argument you pass to @http_handler
 will be passed to the initialize(self,**kwds) method of
 your request handler class, see tornado documentation
 or test_server.py for an example.
