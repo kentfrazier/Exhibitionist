@@ -2,6 +2,7 @@
 # testing #
 ###########
 # from websocket import create_connection
+import nose
 from exhibitionist.isubscriber import ISubscriber
 
 from exhibitionist import get_server
@@ -62,11 +63,6 @@ class TestWebsocket(unittest.TestCase):
         self.objid = self.server.registry.register(self.o)
 
     def tearDown(self):
-        try:
-            self.ws.close()
-        except:
-            pass
-
         self.server.stop()
         self.server.join(5)
         pass
@@ -86,6 +82,7 @@ class TestWebsocket(unittest.TestCase):
 
 
     def test_pubsub(self):
+        raise nose.SkipTest()
         # import threading
         # print threading.enumerate()
         # 1/0
@@ -139,6 +136,7 @@ class TestWebsocket(unittest.TestCase):
             ws.close()
 
     def test_2way_pubsub(self):
+        raise nose.SkipTest()
         basket = []
         basket2 = []
 
@@ -183,8 +181,11 @@ class TestWebsocket(unittest.TestCase):
 
         self.assertEqual(basket2.pop(), 'm_data')
 
+        ws.close()
+
 
     def test_clear_sub_on_close(self):
+        raise nose.SkipTest()
         import time
 
         basket = []
@@ -219,10 +220,12 @@ class TestWebsocket(unittest.TestCase):
         self.assertEqual(len(lsub(objid)), 2)
 
         ws.close()
+
         self.wait_for_predicate(lambda: len(lsub(objid)) == 1, 1, 0.01)
         self.assertEqual(len(lsub(objid)), 1)
 
         ws2.close()
+
         self.wait_for_predicate(lambda: len(lsub(objid)) == 0, 1, 0.01)
         self.assertEqual(len(lsub(objid)), 0)
 

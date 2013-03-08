@@ -11,7 +11,7 @@ env:
     - # need at least this so travis page will show env column
 
 matrix:
-   include:
+  include:
      - python: 3.3
        env: PYTHONWARNINGS="d"
   allow_failures:
@@ -21,6 +21,7 @@ matrix:
 before_install:
   - echo "Waldo1"
   - echo $VIRTUAL_ENV
+  - export PYTHONFAULTHANDLER=true
   - date
 #  - export PIP_ARGS=-q # comment this this to debug travis install issues
   - export APT_ARGS=-qq # comment this to debug travis install issues
