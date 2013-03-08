@@ -71,4 +71,8 @@ printing notices periodically, indicating messages being exchanged between
 python and the client over websockets.
 If You're using chrome, developer tools let's you see websockets frames
 as they are passed on the wire, from the network tab.
-""");
+""")
+
+
+# when you're done, shutdown the server to release the socket
+# server.stop()

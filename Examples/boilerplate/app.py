@@ -57,6 +57,10 @@ UrlDisplay(url)
 # server.notify_object(obj,dict(msg_type="GREETING",payload="Hello World!"))
 
 
+# when you're done, shutdown the server to release the socket
+# server.stop()
+
+
 if __name__ == "__main__":
     print("""
     You should be running this in an interactive session. If

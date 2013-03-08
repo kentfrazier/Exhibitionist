@@ -50,6 +50,12 @@ df=mkdf(5000,10)
 # with the bottom left-hand button
 # df.ix[0,0]="pooh"
 
+
+# when you're done, shutdown the server to release the socket
+# server.stop()
+
+
+
 if __name__ == "__main__":
     print("""
     You should be running this in an interactive session. If
