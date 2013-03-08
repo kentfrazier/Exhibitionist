@@ -17,7 +17,7 @@ leveraging javascript libraries such as [d3.js](http://d3js.org) or your favorit
 library, exhibitionist allows you to do that succinctly in a way that closely
 follows modern web app development practices, in both spirit and process.
 
-The resulting views are available as urls served from a local server and are viewable directly in the browser.  Users of [IPython-notebook](http://gituhb.com/ipython/ipython ) can leverage it's inline display of HTML+Javascript for seamless integration of views into their interactive workflow.
+The resulting views are available as urls served from a local server and are viewable directly in the browser.  Users of [IPython-notebook](http://github.com/ipython/ipython ) can leverage it's inline display of HTML+Javascript for seamless integration of views into their interactive workflow.
 
 *Features:*
 
